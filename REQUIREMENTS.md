@@ -54,32 +54,32 @@ ShopSphere follows a **Layered Modular Monolith Architecture**:
 | Component | Installed / Target | Status / Assessment |
 |---|---|---|
 | **OS** | Windows 11 (AMD64) | Active environment |
-| **JDK** | Oracle JDK 23.0.2 | Installed. Spring Boot 3.3.x/3.4.x runs well with Java 21 LTS or Java 23. Target bytecode: Java 21 LTS compatible. |
+| **JDK** | Oracle JDK 23.0.2 | Installed. Spring Boot 3.4.x configured targeting Java 21 bytecode. |
 | **Maven** | Apache Maven 3.9.15 | Installed and healthy |
-| **Database** | MySQL 8.0 (Service: `MySQL80`) | Installed and currently running on local machine |
-| **VCS** | Git 2.45.0 | Installed (workspace not yet initialized with Git) |
-| **Docker** | Not recognized in PATH | Will address in Milestone 14 (Docker can be installed or configured later) |
+| **Database** | MySQL 8.0 (Service: `MySQL80`) | Installed and active on local system |
+| **VCS** | Git 2.45.0 | Initialized and linked to GitHub remote |
+| **Docker** | Planned | Will be addressed in Milestone 14 |
 
 ---
 
 ## 4. Master Milestone Checklist
 
-- [ ] **Milestone 0: Environment and Requirements** *(Current)*
-- [ ] **Milestone 1: Spring Boot Foundation** (Bootstrap Maven, basic health endpoint, Git init, README)
-- [ ] **Milestone 2: MySQL and JPA Fundamentals** (HikariCP config, entity mapping, test persistence)
-- [ ] **Milestone 3: Product CRUD APIs** (Endpoints, HTTP semantics, service-repo wiring)
-- [ ] **Milestone 4: Validation and Error Handling** (Jakarta validation, `@RestControllerAdvice`)
-- [ ] **Milestone 5: DTOs and Application Structure** (Decoupled Request/Response DTOs, unit tests)
-- [ ] **Milestone 6: Categories and Database Relationships** (`@ManyToOne`, `@OneToMany`, fetch strategy)
-- [ ] **Milestone 7: Search, Filtering, Sorting, and Pagination** (`Pageable`, Spring Data Specifications/Derived Queries)
-- [ ] **Milestone 8: User Registration and Authentication** (BCrypt, Spring Security, JWT token generation)
-- [ ] **Milestone 9: Authorization and Roles** (Role-based access: `ROLE_CUSTOMER`, `ROLE_ADMIN`)
-- [ ] **Milestone 10: Shopping Cart** (Cart & cart items, server-side price computation)
-- [ ] **Milestone 11: Orders and Inventory** (`@Transactional`, inventory deduction, concurrency protection)
-- [ ] **Milestone 12: Automated Testing** (JUnit 5, Mockito, MockMvc integration testing)
-- [ ] **Milestone 13: API Documentation and Hardening** (OpenAPI / Swagger UI, audit & security review)
-- [ ] **Milestone 14: Docker and Deployment** (Dockerfile, docker-compose for app + MySQL)
-- [ ] **Milestone 15: Final Portfolio and Interview Preparation** (Comprehensive documentation, interview drill)
+- [x] **Milestone 0: Environment and Requirements** (Completed)
+- [x] **Milestone 1: Spring Boot Foundation** (Completed & Verified)
+- [ ] **Milestone 2: MySQL and JPA Fundamentals**
+- [ ] **Milestone 3: Product CRUD APIs**
+- [ ] **Milestone 4: Validation and Error Handling**
+- [ ] **Milestone 5: DTOs and Application Structure**
+- [ ] **Milestone 6: Categories and Database Relationships**
+- [ ] **Milestone 7: Search, Filtering, Sorting, and Pagination**
+- [ ] **Milestone 8: User Registration and Authentication**
+- [ ] **Milestone 9: Authorization and Roles**
+- [ ] **Milestone 10: Shopping Cart**
+- [ ] **Milestone 11: Orders and Inventory**
+- [ ] **Milestone 12: Automated Testing**
+- [ ] **Milestone 13: API Documentation and Hardening**
+- [ ] **Milestone 14: Docker and Deployment**
+- [ ] **Milestone 15: Final Portfolio and Interview Preparation**
 
 ---
 

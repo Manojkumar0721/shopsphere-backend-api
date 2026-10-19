@@ -4,19 +4,19 @@ ShopSphere is an enterprise-grade e-commerce RESTful API developed with Java 21 
 
 ---
 
-## 🛠 Tech Stack
+## Technical Stack
 
 - **Language:** Java 21 LTS
 - **Framework:** Spring Boot 3.4.3 (Spring MVC, Spring Data JPA, Spring Security)
 - **Database:** MySQL 8.0
 - **Build Tool:** Apache Maven
 - **Testing:** JUnit 5, Mockito, MockMvc
-- **API Documentation:** OpenAPI / Swagger UI (planned)
-- **Containerization:** Docker & Docker Compose (planned)
+- **API Documentation:** OpenAPI / Swagger UI
+- **Containerization:** Docker & Docker Compose
 
 ---
 
-## 🏗 Architecture Overview
+## Architecture Overview
 
 ShopSphere adheres strictly to a **Layered Modular Monolith Architecture**:
 
@@ -41,7 +41,7 @@ ShopSphere adheres strictly to a **Layered Modular Monolith Architecture**:
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - **JDK 21** or later
@@ -64,8 +64,9 @@ mvn spring-boot:run
 Once started, the application will listen on port `8080`.
 
 ### Health Check Endpoint
-To verify the application is running:
-- **URL:** `GET http://localhost:8080/api/v1/health`
+To verify the application status:
+- **Method:** `GET`
+- **URL:** `http://localhost:8080/api/v1/health`
 - **Response:**
 ```json
 {
@@ -77,10 +78,10 @@ To verify the application is running:
 
 ---
 
-## 📌 Project Milestones Status
+## Milestone Progress
 
 - [x] **Milestone 0:** Environment and Requirements
-- [x] **Milestone 1:** Spring Boot Foundation (Verified)
+- [x] **Milestone 1:** Spring Boot Foundation
 - [ ] **Milestone 2:** MySQL and JPA Fundamentals
 - [ ] **Milestone 3:** Product CRUD APIs
 - [ ] **Milestone 4:** Validation and Centralized Error Handling
