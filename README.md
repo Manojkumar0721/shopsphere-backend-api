@@ -82,7 +82,7 @@ To verify the application status:
 
 - [x] **Milestone 0:** Environment and Requirements
 - [x] **Milestone 1:** Spring Boot Foundation
-- [ ] **Milestone 2:** MySQL and JPA Fundamentals
+- [x] **Milestone 2:** MySQL and JPA Fundamentals
 - [ ] **Milestone 3:** Product CRUD APIs
 - [ ] **Milestone 4:** Validation and Centralized Error Handling
 - [ ] **Milestone 5:** DTOs and Application Decoupling
