@@ -67,7 +67,7 @@ ShopSphere follows a **Layered Modular Monolith Architecture**:
 - [x] **Milestone 0: Environment and Requirements** (Completed)
 - [x] **Milestone 1: Spring Boot Foundation** (Completed & Verified)
 - [x] **Milestone 2: MySQL and JPA Fundamentals** (Completed & Verified)
-- [ ] **Milestone 3: Product CRUD APIs**
+- [x] **Milestone 3: Product CRUD APIs** (Completed & Verified)
 - [ ] **Milestone 4: Validation and Error Handling**
 - [ ] **Milestone 5: DTOs and Application Structure**
 - [ ] **Milestone 6: Categories and Database Relationships**
