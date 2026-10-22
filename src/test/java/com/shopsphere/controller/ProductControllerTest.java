@@ -3,11 +3,15 @@ package com.shopsphere.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shopsphere.dto.ProductRequest;
 import com.shopsphere.dto.ProductResponse;
+import com.shopsphere.exception.DuplicateResourceException;
+import com.shopsphere.exception.GlobalExceptionHandler;
+import com.shopsphere.exception.ResourceNotFoundException;
 import com.shopsphere.service.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,10 +28,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Controller integration tests using @WebMvcTest.
- * Slices the Spring context to test ProductController endpoints, HTTP status codes, and JSON serialization.
+ * Controller integration tests including request validation and centralized exception handling.
  */
 @WebMvcTest(ProductController.class)
+@Import(GlobalExceptionHandler.class)
 class ProductControllerTest {
 
     @Autowired
@@ -75,6 +79,53 @@ class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("POST /api/v1/products - Should return HTTP 400 Bad Request when validation fails")
+    void shouldReturnBadRequestWhenValidationFails() throws Exception {
+        // Invalid request: blank name, negative price, negative stock, blank sku
+        ProductRequest invalidRequest = new ProductRequest(
+                "",
+                "Description",
+                new BigDecimal("-10.00"),
+                -5,
+                ""
+        );
+
+        mockMvc.perform(post("/api/v1/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.validationErrors.name").exists())
+                .andExpect(jsonPath("$.validationErrors.price").exists())
+                .andExpect(jsonPath("$.validationErrors.stockQuantity").exists())
+                .andExpect(jsonPath("$.validationErrors.sku").exists());
+    }
+
+    @Test
+    @DisplayName("POST /api/v1/products - Should return HTTP 409 Conflict when SKU already exists")
+    void shouldReturnConflictWhenSkuAlreadyExists() throws Exception {
+        ProductRequest request = new ProductRequest(
+                "Gaming Monitor",
+                "Description",
+                new BigDecimal("249.99"),
+                10,
+                "PROD-DUPLICATE-SKU"
+        );
+
+        when(productService.createProduct(any(ProductRequest.class)))
+                .thenThrow(new DuplicateResourceException("Product with SKU 'PROD-DUPLICATE-SKU' already exists"));
+
+        mockMvc.perform(post("/api/v1/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status").value(409))
+                .andExpect(jsonPath("$.error").value("Conflict"))
+                .andExpect(jsonPath("$.message").value("Product with SKU 'PROD-DUPLICATE-SKU' already exists"));
+    }
+
+    @Test
     @DisplayName("GET /api/v1/products - Should return all products with HTTP 200 OK")
     void shouldGetAllProducts() throws Exception {
         ProductResponse response = new ProductResponse(
@@ -118,6 +169,19 @@ class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.name").value("Gaming Monitor"));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/products/{id} - Should return HTTP 404 Not Found when product does not exist")
+    void shouldReturnNotFoundWhenProductDoesNotExist() throws Exception {
+        when(productService.getProductById(999L))
+                .thenThrow(new ResourceNotFoundException("Product not found with id: 999"));
+
+        mockMvc.perform(get("/api/v1/products/999"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Not Found"))
+                .andExpect(jsonPath("$.message").value("Product not found with id: 999"));
     }
 
     @Test
