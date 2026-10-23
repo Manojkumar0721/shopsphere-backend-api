@@ -87,8 +87,6 @@ To verify the application status:
 - [x] **Milestone 4:** Validation and Centralized Error Handling
 - [x] **Milestone 5:** DTOs and Application Decoupling
 - [ ] **Milestone 6:** Categories & Relational Mapping
-- [ ] **Milestone 5:** DTOs and Application Decoupling
-- [ ] **Milestone 6:** Categories & Relational Mapping
 - [ ] **Milestone 7:** Search, Filtering, Sorting & Pagination
 - [ ] **Milestone 8:** User Registration & JWT Authentication
 - [ ] **Milestone 9:** Authorization & Role-Based Access Control
