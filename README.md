@@ -85,7 +85,8 @@ To verify the application status:
 - [x] **Milestone 2:** MySQL and JPA Fundamentals
 - [x] **Milestone 3:** Product CRUD APIs
 - [x] **Milestone 4:** Validation and Centralized Error Handling
-- [ ] **Milestone 5:** DTOs and Application Decoupling
+- [x] **Milestone 5:** DTOs and Application Decoupling
+- [ ] **Milestone 6:** Categories & Relational Mapping
 - [ ] **Milestone 5:** DTOs and Application Decoupling
 - [ ] **Milestone 6:** Categories & Relational Mapping
 - [ ] **Milestone 7:** Search, Filtering, Sorting & Pagination

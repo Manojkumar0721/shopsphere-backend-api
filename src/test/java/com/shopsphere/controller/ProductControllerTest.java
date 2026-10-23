@@ -1,8 +1,9 @@
 package com.shopsphere.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shopsphere.dto.ProductRequest;
+import com.shopsphere.dto.ProductCreateRequest;
 import com.shopsphere.dto.ProductResponse;
+import com.shopsphere.dto.ProductUpdateRequest;
 import com.shopsphere.exception.DuplicateResourceException;
 import com.shopsphere.exception.GlobalExceptionHandler;
 import com.shopsphere.exception.ResourceNotFoundException;
@@ -46,7 +47,7 @@ class ProductControllerTest {
     @Test
     @DisplayName("POST /api/v1/products - Should create product and return HTTP 201 Created")
     void shouldCreateProduct() throws Exception {
-        ProductRequest request = new ProductRequest(
+        ProductCreateRequest request = new ProductCreateRequest(
                 "Gaming Monitor",
                 "27-inch 144Hz 1ms IPS gaming display",
                 new BigDecimal("249.99"),
@@ -66,7 +67,7 @@ class ProductControllerTest {
                 LocalDateTime.now()
         );
 
-        when(productService.createProduct(any(ProductRequest.class))).thenReturn(response);
+        when(productService.createProduct(any(ProductCreateRequest.class))).thenReturn(response);
 
         mockMvc.perform(post("/api/v1/products")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -82,7 +83,7 @@ class ProductControllerTest {
     @DisplayName("POST /api/v1/products - Should return HTTP 400 Bad Request when validation fails")
     void shouldReturnBadRequestWhenValidationFails() throws Exception {
         // Invalid request: blank name, negative price, negative stock, blank sku
-        ProductRequest invalidRequest = new ProductRequest(
+        ProductCreateRequest invalidRequest = new ProductCreateRequest(
                 "",
                 "Description",
                 new BigDecimal("-10.00"),
@@ -105,7 +106,7 @@ class ProductControllerTest {
     @Test
     @DisplayName("POST /api/v1/products - Should return HTTP 409 Conflict when SKU already exists")
     void shouldReturnConflictWhenSkuAlreadyExists() throws Exception {
-        ProductRequest request = new ProductRequest(
+        ProductCreateRequest request = new ProductCreateRequest(
                 "Gaming Monitor",
                 "Description",
                 new BigDecimal("249.99"),
@@ -113,7 +114,7 @@ class ProductControllerTest {
                 "PROD-DUPLICATE-SKU"
         );
 
-        when(productService.createProduct(any(ProductRequest.class)))
+        when(productService.createProduct(any(ProductCreateRequest.class)))
                 .thenThrow(new DuplicateResourceException("Product with SKU 'PROD-DUPLICATE-SKU' already exists"));
 
         mockMvc.perform(post("/api/v1/products")
@@ -187,12 +188,13 @@ class ProductControllerTest {
     @Test
     @DisplayName("PUT /api/v1/products/{id} - Should update product and return HTTP 200 OK")
     void shouldUpdateProduct() throws Exception {
-        ProductRequest updateRequest = new ProductRequest(
+        ProductUpdateRequest updateRequest = new ProductUpdateRequest(
                 "Updated Monitor",
                 "Updated description",
                 new BigDecimal("269.99"),
                 20,
-                "PROD-MONITOR-27"
+                "PROD-MONITOR-27",
+                true
         );
 
         ProductResponse updatedResponse = new ProductResponse(
@@ -207,7 +209,7 @@ class ProductControllerTest {
                 LocalDateTime.now()
         );
 
-        when(productService.updateProduct(eq(1L), any(ProductRequest.class))).thenReturn(updatedResponse);
+        when(productService.updateProduct(eq(1L), any(ProductUpdateRequest.class))).thenReturn(updatedResponse);
 
         mockMvc.perform(put("/api/v1/products/1")
                         .contentType(MediaType.APPLICATION_JSON)

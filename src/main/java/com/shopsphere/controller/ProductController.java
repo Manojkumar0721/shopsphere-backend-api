@@ -1,7 +1,8 @@
 package com.shopsphere.controller;
 
-import com.shopsphere.dto.ProductRequest;
+import com.shopsphere.dto.ProductCreateRequest;
 import com.shopsphere.dto.ProductResponse;
+import com.shopsphere.dto.ProductUpdateRequest;
 import com.shopsphere.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,7 @@ import java.util.List;
 
 /**
  * REST Controller exposing Product catalog endpoints under /api/v1/products.
- * Follows RESTful standards with appropriate HTTP methods, status codes, and request validation.
+ * Follows RESTful standards with separated Create/Update DTO contracts and HTTP status codes.
  */
 @RestController
 @RequestMapping("/api/v1/products")
@@ -27,10 +28,10 @@ public class ProductController {
 
     /**
      * POST /api/v1/products
-     * Creates a new product. Validates request body. Returns HTTP 201 Created.
+     * Creates a new product using specialized ProductCreateRequest DTO.
      */
     @PostMapping
-    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest request) {
+    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductCreateRequest request) {
         ProductResponse response = productService.createProduct(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -57,12 +58,12 @@ public class ProductController {
 
     /**
      * PUT /api/v1/products/{id}
-     * Updates an existing product. Validates request body. Returns HTTP 200 OK.
+     * Updates an existing product using specialized ProductUpdateRequest DTO.
      */
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable Long id,
-            @Valid @RequestBody ProductRequest request
+            @Valid @RequestBody ProductUpdateRequest request
     ) {
         ProductResponse response = productService.updateProduct(id, request);
         return ResponseEntity.ok(response);

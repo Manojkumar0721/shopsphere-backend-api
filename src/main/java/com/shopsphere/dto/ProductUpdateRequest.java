@@ -9,9 +9,10 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 
 /**
- * Immutable DTO representing incoming product creation and update requests with validation constraints.
+ * Request DTO strictly for updating an existing product.
+ * Separated from creation to allow independent evolution of update rules.
  */
-public record ProductRequest(
+public record ProductUpdateRequest(
         @NotBlank(message = "Product name is required")
         @Size(min = 2, max = 150, message = "Product name must be between 2 and 150 characters")
         String name,
@@ -29,6 +30,8 @@ public record ProductRequest(
 
         @NotBlank(message = "SKU is required")
         @Size(min = 3, max = 50, message = "SKU must be between 3 and 50 characters")
-        String sku
+        String sku,
+
+        Boolean active
 ) {
 }

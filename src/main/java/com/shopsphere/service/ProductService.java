@@ -1,7 +1,8 @@
 package com.shopsphere.service;
 
-import com.shopsphere.dto.ProductRequest;
+import com.shopsphere.dto.ProductCreateRequest;
 import com.shopsphere.dto.ProductResponse;
+import com.shopsphere.dto.ProductUpdateRequest;
 
 import java.util.List;
 
@@ -10,13 +11,13 @@ import java.util.List;
  */
 public interface ProductService {
 
-    ProductResponse createProduct(ProductRequest request);
+    ProductResponse createProduct(ProductCreateRequest request);
 
     List<ProductResponse> getAllProducts();
 
     ProductResponse getProductById(Long id);
 
-    ProductResponse updateProduct(Long id, ProductRequest request);
+    ProductResponse updateProduct(Long id, ProductUpdateRequest request);
 
     void deleteProduct(Long id);
 }

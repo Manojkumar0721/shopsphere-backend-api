@@ -1,10 +1,12 @@
 package com.shopsphere.service;
 
-import com.shopsphere.dto.ProductRequest;
+import com.shopsphere.dto.ProductCreateRequest;
 import com.shopsphere.dto.ProductResponse;
+import com.shopsphere.dto.ProductUpdateRequest;
 import com.shopsphere.entity.Product;
 import com.shopsphere.exception.DuplicateResourceException;
 import com.shopsphere.exception.ResourceNotFoundException;
+import com.shopsphere.mapper.ProductMapper;
 import com.shopsphere.repository.ProductRepository;
 import com.shopsphere.service.impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -26,7 +29,6 @@ import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for ProductServiceImpl using Mockito.
- * Tests business logic in complete isolation without starting Spring or the database.
  */
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -34,11 +36,14 @@ class ProductServiceTest {
     @Mock
     private ProductRepository productRepository;
 
+    @Spy
+    private ProductMapper productMapper = new ProductMapper();
+
     @InjectMocks
     private ProductServiceImpl productService;
 
     private Product product;
-    private ProductRequest productRequest;
+    private ProductCreateRequest createRequest;
 
     @BeforeEach
     void setUp() {
@@ -51,7 +56,7 @@ class ProductServiceTest {
         );
         product.setId(1L);
 
-        productRequest = new ProductRequest(
+        createRequest = new ProductCreateRequest(
                 "Wireless Mouse",
                 "Ergonomic wireless mouse",
                 new BigDecimal("29.99"),
@@ -66,7 +71,7 @@ class ProductServiceTest {
         when(productRepository.existsBySku("PROD-MOUSE-01")).thenReturn(false);
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
-        ProductResponse response = productService.createProduct(productRequest);
+        ProductResponse response = productService.createProduct(createRequest);
 
         assertThat(response).isNotNull();
         assertThat(response.id()).isEqualTo(1L);
@@ -80,7 +85,7 @@ class ProductServiceTest {
     void shouldThrowExceptionWhenSkuAlreadyExists() {
         when(productRepository.existsBySku("PROD-MOUSE-01")).thenReturn(true);
 
-        assertThatThrownBy(() -> productService.createProduct(productRequest))
+        assertThatThrownBy(() -> productService.createProduct(createRequest))
                 .isInstanceOf(DuplicateResourceException.class)
                 .hasMessageContaining("already exists");
 
@@ -123,12 +128,13 @@ class ProductServiceTest {
     @Test
     @DisplayName("Should update product successfully")
     void shouldUpdateProductSuccessfully() {
-        ProductRequest updateRequest = new ProductRequest(
+        ProductUpdateRequest updateRequest = new ProductUpdateRequest(
                 "Updated Wireless Mouse",
                 "Updated description",
                 new BigDecimal("34.99"),
                 40,
-                "PROD-MOUSE-01"
+                "PROD-MOUSE-01",
+                true
         );
 
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));

@@ -1,10 +1,12 @@
 package com.shopsphere.service.impl;
 
-import com.shopsphere.dto.ProductRequest;
+import com.shopsphere.dto.ProductCreateRequest;
 import com.shopsphere.dto.ProductResponse;
+import com.shopsphere.dto.ProductUpdateRequest;
 import com.shopsphere.entity.Product;
 import com.shopsphere.exception.DuplicateResourceException;
 import com.shopsphere.exception.ResourceNotFoundException;
+import com.shopsphere.mapper.ProductMapper;
 import com.shopsphere.repository.ProductRepository;
 import com.shopsphere.service.ProductService;
 import org.springframework.stereotype.Service;
@@ -13,37 +15,32 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Service implementation containing core business logic for Product domain.
- * Enforces transaction management (@Transactional) and constructor dependency injection.
+ * Service implementation containing core business logic for the Product domain.
+ * Delegates mapping to ProductMapper and persistence to ProductRepository.
  */
 @Service
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
-    // Constructor injection: preferred over @Autowired field injection
-    public ProductServiceImpl(ProductRepository productRepository) {
+    // Constructor injection for both repository and mapper
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
+        this.productMapper = productMapper;
     }
 
     @Override
     @Transactional
-    public ProductResponse createProduct(ProductRequest request) {
+    public ProductResponse createProduct(ProductCreateRequest request) {
         // Business Rule: SKU must be globally unique
         if (productRepository.existsBySku(request.sku())) {
             throw new DuplicateResourceException("Product with SKU '" + request.sku() + "' already exists");
         }
 
-        Product product = new Product(
-                request.name(),
-                request.description(),
-                request.price(),
-                request.stockQuantity(),
-                request.sku()
-        );
-
+        Product product = productMapper.toEntity(request);
         Product savedProduct = productRepository.save(product);
-        return ProductResponse.fromEntity(savedProduct);
+        return productMapper.toResponse(savedProduct);
     }
 
     @Override
@@ -51,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductResponse> getAllProducts() {
         return productRepository.findAll()
                 .stream()
-                .map(ProductResponse::fromEntity)
+                .map(productMapper::toResponse)
                 .toList();
     }
 
@@ -60,28 +57,23 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse getProductById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
-        return ProductResponse.fromEntity(product);
+        return productMapper.toResponse(product);
     }
 
     @Override
     @Transactional
-    public ProductResponse updateProduct(Long id, ProductRequest request) {
+    public ProductResponse updateProduct(Long id, ProductUpdateRequest request) {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
 
-        // Business Rule: If updating SKU, ensure the new SKU does not conflict with another product
+        // Business Rule: If changing SKU, verify the new SKU does not collide with another product
         if (!existingProduct.getSku().equals(request.sku()) && productRepository.existsBySku(request.sku())) {
             throw new DuplicateResourceException("Product with SKU '" + request.sku() + "' already exists");
         }
 
-        existingProduct.setName(request.name());
-        existingProduct.setDescription(request.description());
-        existingProduct.setPrice(request.price());
-        existingProduct.setStockQuantity(request.stockQuantity());
-        existingProduct.setSku(request.sku());
-
+        productMapper.updateEntityFromRequest(existingProduct, request);
         Product updatedProduct = productRepository.save(existingProduct);
-        return ProductResponse.fromEntity(updatedProduct);
+        return productMapper.toResponse(updatedProduct);
     }
 
     @Override
