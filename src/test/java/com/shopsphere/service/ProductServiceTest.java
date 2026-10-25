@@ -3,10 +3,12 @@ package com.shopsphere.service;
 import com.shopsphere.dto.ProductCreateRequest;
 import com.shopsphere.dto.ProductResponse;
 import com.shopsphere.dto.ProductUpdateRequest;
+import com.shopsphere.entity.Category;
 import com.shopsphere.entity.Product;
 import com.shopsphere.exception.DuplicateResourceException;
 import com.shopsphere.exception.ResourceNotFoundException;
 import com.shopsphere.mapper.ProductMapper;
+import com.shopsphere.repository.CategoryRepository;
 import com.shopsphere.repository.ProductRepository;
 import com.shopsphere.service.impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,14 +29,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * Unit tests for ProductServiceImpl using Mockito.
- */
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
+
+    @Mock
+    private CategoryRepository categoryRepository;
 
     @Spy
     private ProductMapper productMapper = new ProductMapper();
@@ -43,10 +45,14 @@ class ProductServiceTest {
     private ProductServiceImpl productService;
 
     private Product product;
+    private Category category;
     private ProductCreateRequest createRequest;
 
     @BeforeEach
     void setUp() {
+        category = new Category("Electronics", "Gadgets");
+        category.setId(10L);
+
         product = new Product(
                 "Wireless Mouse",
                 "Ergonomic wireless mouse",
@@ -55,20 +61,23 @@ class ProductServiceTest {
                 "PROD-MOUSE-01"
         );
         product.setId(1L);
+        product.setCategory(category);
 
         createRequest = new ProductCreateRequest(
                 "Wireless Mouse",
                 "Ergonomic wireless mouse",
                 new BigDecimal("29.99"),
                 50,
-                "PROD-MOUSE-01"
+                "PROD-MOUSE-01",
+                10L
         );
     }
 
     @Test
-    @DisplayName("Should successfully create a product when SKU is unique")
+    @DisplayName("Should successfully create a product linked to category")
     void shouldCreateProductWhenSkuIsUnique() {
         when(productRepository.existsBySku("PROD-MOUSE-01")).thenReturn(false);
+        when(categoryRepository.findById(10L)).thenReturn(Optional.of(category));
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
         ProductResponse response = productService.createProduct(createRequest);
@@ -77,6 +86,8 @@ class ProductServiceTest {
         assertThat(response.id()).isEqualTo(1L);
         assertThat(response.name()).isEqualTo("Wireless Mouse");
         assertThat(response.sku()).isEqualTo("PROD-MOUSE-01");
+        assertThat(response.categoryId()).isEqualTo(10L);
+        assertThat(response.categoryName()).isEqualTo("Electronics");
         verify(productRepository, times(1)).save(any(Product.class));
     }
 
@@ -134,10 +145,12 @@ class ProductServiceTest {
                 new BigDecimal("34.99"),
                 40,
                 "PROD-MOUSE-01",
-                true
+                true,
+                10L
         );
 
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+        when(categoryRepository.findById(10L)).thenReturn(Optional.of(category));
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
         ProductResponse updatedResponse = productService.updateProduct(1L, updateRequest);

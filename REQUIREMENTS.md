@@ -70,7 +70,7 @@ ShopSphere follows a **Layered Modular Monolith Architecture**:
 - [x] **Milestone 3: Product CRUD APIs** (Completed & Verified)
 - [x] **Milestone 4: Validation and Error Handling** (Completed & Verified)
 - [x] **Milestone 5: DTOs and Application Structure** (Completed & Verified)
-- [ ] **Milestone 6: Categories and Database Relationships**
+- [x] **Milestone 6: Categories and Database Relationships** (Completed & Verified)
 - [ ] **Milestone 7: Search, Filtering, Sorting, and Pagination**
 - [ ] **Milestone 8: User Registration and Authentication**
 - [ ] **Milestone 9: Authorization and Roles**

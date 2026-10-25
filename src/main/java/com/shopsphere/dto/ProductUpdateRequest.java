@@ -8,10 +8,6 @@ import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
-/**
- * Request DTO strictly for updating an existing product.
- * Separated from creation to allow independent evolution of update rules.
- */
 public record ProductUpdateRequest(
         @NotBlank(message = "Product name is required")
         @Size(min = 2, max = 150, message = "Product name must be between 2 and 150 characters")
@@ -32,6 +28,8 @@ public record ProductUpdateRequest(
         @Size(min = 3, max = 50, message = "SKU must be between 3 and 50 characters")
         String sku,
 
-        Boolean active
+        Boolean active,
+
+        Long categoryId
 ) {
 }

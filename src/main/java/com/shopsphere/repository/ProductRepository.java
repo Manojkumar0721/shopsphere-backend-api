@@ -30,4 +30,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * Generates: "SELECT COUNT(p) > 0 FROM Product p WHERE p.sku = :sku"
      */
     boolean existsBySku(String sku);
+
+    /**
+     * Find all products belonging to a given category ID.
+     */
+    java.util.List<Product> findByCategoryId(Long categoryId);
 }

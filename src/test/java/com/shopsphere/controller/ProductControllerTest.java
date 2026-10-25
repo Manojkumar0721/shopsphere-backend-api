@@ -52,7 +52,8 @@ class ProductControllerTest {
                 "27-inch 144Hz 1ms IPS gaming display",
                 new BigDecimal("249.99"),
                 25,
-                "PROD-MONITOR-27"
+                "PROD-MONITOR-27",
+                1L
         );
 
         ProductResponse response = new ProductResponse(
@@ -63,6 +64,8 @@ class ProductControllerTest {
                 25,
                 "PROD-MONITOR-27",
                 true,
+                1L,
+                "Electronics",
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
@@ -76,7 +79,9 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.name").value("Gaming Monitor"))
                 .andExpect(jsonPath("$.sku").value("PROD-MONITOR-27"))
-                .andExpect(jsonPath("$.price").value(249.99));
+                .andExpect(jsonPath("$.price").value(249.99))
+                .andExpect(jsonPath("$.categoryId").value(1L))
+                .andExpect(jsonPath("$.categoryName").value("Electronics"));
     }
 
     @Test
@@ -88,7 +93,8 @@ class ProductControllerTest {
                 "Description",
                 new BigDecimal("-10.00"),
                 -5,
-                ""
+                "",
+                null
         );
 
         mockMvc.perform(post("/api/v1/products")
@@ -111,7 +117,8 @@ class ProductControllerTest {
                 "Description",
                 new BigDecimal("249.99"),
                 10,
-                "PROD-DUPLICATE-SKU"
+                "PROD-DUPLICATE-SKU",
+                null
         );
 
         when(productService.createProduct(any(ProductCreateRequest.class)))
@@ -137,6 +144,8 @@ class ProductControllerTest {
                 25,
                 "PROD-MONITOR-27",
                 true,
+                null,
+                null,
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
@@ -160,6 +169,8 @@ class ProductControllerTest {
                 25,
                 "PROD-MONITOR-27",
                 true,
+                null,
+                null,
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
@@ -194,7 +205,8 @@ class ProductControllerTest {
                 new BigDecimal("269.99"),
                 20,
                 "PROD-MONITOR-27",
-                true
+                true,
+                1L
         );
 
         ProductResponse updatedResponse = new ProductResponse(
@@ -205,6 +217,8 @@ class ProductControllerTest {
                 20,
                 "PROD-MONITOR-27",
                 true,
+                1L,
+                "Electronics",
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );

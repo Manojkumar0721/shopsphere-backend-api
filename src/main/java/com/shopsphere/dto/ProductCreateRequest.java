@@ -8,10 +8,6 @@ import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
-/**
- * Request DTO strictly for creating a new product.
- * Enforces all required fields and constraints at the API boundary.
- */
 public record ProductCreateRequest(
         @NotBlank(message = "Product name is required")
         @Size(min = 2, max = 150, message = "Product name must be between 2 and 150 characters")
@@ -30,6 +26,8 @@ public record ProductCreateRequest(
 
         @NotBlank(message = "SKU is required")
         @Size(min = 3, max = 50, message = "SKU must be between 3 and 50 characters")
-        String sku
+        String sku,
+
+        Long categoryId
 ) {
 }

@@ -6,73 +6,52 @@ import java.time.LocalDateTime;
 
 /**
  * Product Entity representing the 'products' table in the database.
- *
- * Annotations breakdown:
- * - @Entity: Marks this class as a JPA entity managed by Hibernate.
- * - @Table: Specifies the database table name ('products') and unique constraints/indexes.
+ * Owns the foreign key relationship to Category.
  */
 @Entity
 @Table(name = "products")
 public class Product {
 
-    /**
-     * Primary key with AUTO_INCREMENT strategy.
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * Product name cannot be null.
-     */
     @Column(nullable = false, length = 150)
     private String name;
 
-    /**
-     * Detailed product description.
-     */
     @Column(length = 1000)
     private String description;
 
-    /**
-     * Product price stored as BigDecimal to avoid floating-point rounding errors in monetary values.
-     * precision = 10 (total digits), scale = 2 (digits after decimal point, e.g. 99999999.99).
-     */
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    /**
-     * Available stock quantity.
-     */
     @Column(nullable = false)
     private Integer stockQuantity;
 
-    /**
-     * Unique Stock Keeping Unit (SKU) identifier for barcode / inventory tracking.
-     */
     @Column(nullable = false, unique = true, length = 50)
     private String sku;
 
-    /**
-     * Product active status flag.
-     */
     @Column(nullable = false)
     private Boolean active = true;
 
     /**
-     * Audit timestamps automatically populated before persist and update.
+     * Owning side of the relationship to Category.
+     * FetchType.LAZY is explicitly used to avoid N+1 queries.
+     * JoinColumn defines the foreign key column name in the products table.
      */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    // Default no-argument constructor required by JPA/Hibernate spec
     public Product() {
     }
 
-    // Parameterized constructor for easy instantiation
     public Product(String name, String description, BigDecimal price, Integer stockQuantity, String sku) {
         this.name = name;
         this.description = description;
@@ -82,7 +61,11 @@ public class Product {
         this.active = true;
     }
 
-    // JPA Entity Lifecycle callbacks
+    public Product(String name, String description, BigDecimal price, Integer stockQuantity, String sku, Category category) {
+        this(name, description, price, stockQuantity, sku);
+        this.category = category;
+    }
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
@@ -152,6 +135,14 @@ public class Product {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public LocalDateTime getCreatedAt() {
